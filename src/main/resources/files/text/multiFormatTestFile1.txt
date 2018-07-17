@@ -1,0 +1,5 @@
+<message><uuid>1</uuid><companyName>ABC1</companyName><content>content1</content></message>
+2   ABC2    content2
+3   ABC3    content3
+{"message": {"uuid" : "4", "companyName":"ABC4","content":"content4"}}
+{"message": {"uuid" : "5", "companyName":"ABC5","content":"content5"}}
