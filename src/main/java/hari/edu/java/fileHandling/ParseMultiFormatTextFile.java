@@ -1,9 +1,13 @@
 package hari.edu.java.fileHandling;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import hari.edu.java.fileHandling.pojo.Message;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import java.io.*;
+import java.util.ArrayList;
 
 /**
  * Created by harih on 7/17/2018.
@@ -22,9 +26,11 @@ public class ParseMultiFormatTextFile {
         try(BufferedReader bufferedReader= new BufferedReader(new FileReader(file))){
             String readLine="";
             int lineNumber=1;
+            ArrayList<Message> messageList=new ArrayList<Message>();
             while((readLine=bufferedReader.readLine())!=null){
                 System.out.println("Line Number " + lineNumber + " ..");
-                parseLineContents(readLine);
+                Message msg=parseLineContents(readLine);
+                messageList.add(msg);
                 lineNumber++;
             }
         }catch(IOException ex){
@@ -32,12 +38,18 @@ public class ParseMultiFormatTextFile {
         }
     }
 
-    public void parseLineContents(String lineContent){
+    public Message parseLineContents(String lineContent){
+        Message msg=null;
         String formatType=getFormatType(lineContent);
         System.out.println("Format Type : "+ formatType);
         if(formatType.equalsIgnoreCase("XML")){
-            parseXML(lineContent);
+            msg=parseXML(lineContent);
+            System.out.println("Message Details > "+ msg.toString());
+        }else if(formatType.equalsIgnoreCase("JSON")){
+            msg=parseJSON(lineContent);
+            System.out.println("Message Details > "+ msg.toString());
         }
+        return msg;
     }
 
     public String getFormatType(String lineContent){
@@ -52,7 +64,33 @@ public class ParseMultiFormatTextFile {
         return formatType;
     }
 
-    public void parseXML(String xml){
-
+    /**
+     * Xml String to Pojo
+     * @param xml
+     * @return Message
+     */
+    public Message parseXML(String xml){
+        Message message=null;
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(Message.class);
+            Unmarshaller jaxbUnMarshaller = jaxbContext.createUnmarshaller();
+            StringReader reader=new StringReader(xml);
+            message=(Message)jaxbUnMarshaller.unmarshal(reader);
+        }catch(JAXBException e){
+            System.out.println("JAXB Exception occured while unmarshalling the Xml.."+ e);
+        }
+        return message;
     }
+
+    public Message parseJSON(String json){
+        Message message=null;
+        ObjectMapper objectMapper=new ObjectMapper();
+        try {
+            message=(Message)objectMapper.readValue(json,Message.class);
+        }catch(IOException e){
+            System.out.println("IO Exception occured while unmarshalling the JAXB.."+ e);
+        }
+        return message;
+    }
+
 }
