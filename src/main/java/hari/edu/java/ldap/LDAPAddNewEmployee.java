@@ -9,7 +9,7 @@ public class LDAPAddNewEmployee {
     private static final Logger logger = Logger.getLogger(LDAPAddNewEmployee.class);
     public static void main(String[] args) {
         LDAPAddNewEmployee ldapAddNewEmployee=new LDAPAddNewEmployee();
-        String newEmployeeDN="employeeNumber=0004,ou=users,o=company";
+        String newEmployeeDN="employeeNumber=0005,ou=users,o=company";
         try {
             DirContext directoryContext=LDAPCommons.getDirectoryContext();
             ldapAddNewEmployee.addNewEmployee(directoryContext,newEmployeeDN);
@@ -27,7 +27,7 @@ public class LDAPAddNewEmployee {
         attributes.put(objectClass);
 
         Attribute cn=new BasicAttribute("cn");
-        cn.add("Vignesh Kumar");
+        cn.add("Vanitha");
         attributes.put(cn);
 
         Attribute sn=new BasicAttribute("sn");
